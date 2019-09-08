@@ -10,7 +10,7 @@ from googleapiclient.http import MediaIoBaseDownload
 #import mock
 from wsgiref.util import FileWrapper
 from django.views.decorators.csrf import csrf_exempt
-import io, sys, csv
+import io, sys, csv, os
 
 creds = ""
 try:
@@ -19,6 +19,7 @@ try:
 except ImportError:
 	flags = None
 SCOPES = 'https://www.googleapis.com/auth/drive.file'
+print(os.getcwd())
 CLIENT_SECRET_FILE = 'gmsserver/client_secret.json'
 CREDENTIAL_FILENAME = 'gmsserver/drive-python-upload.json'
 store = file.Storage(CREDENTIAL_FILENAME)
@@ -48,7 +49,7 @@ def find_folder(name):
 
 def file_download(id, name):
 	request = DRIVE.files().get_media(fileId=id)
-	f = open("gmsserver/download/"+name,'wb')
+	f = open("download/"+name,'wb')
 	wr = csv.writer(f)
 	downloader = MediaIoBaseDownload(f, request)
 	done = False
@@ -59,13 +60,17 @@ def file_download(id, name):
 
 @csrf_exempt
 def hello_world(request):
+	'''
+	if os.path.isfile("gmsserver/download/"+name):
+		os.remove("gmsserver/download/"+name)
+		'''
 	if request.method == "POST":
 		date = request.POST.get('date')
 		code = request.POST.get('code')
 		name = date+"-"+code+"c"
 		print(name)
 		file_download(find_folder(name),name)
-		t = open("gmsserver/download/"+name)
+		t = open("download/"+name)
 		response =HttpResponse(content_type="text/csv")
 		response['Content-Disposition']='attachment; filename="gmsserver/download/"'+name
 		return response
