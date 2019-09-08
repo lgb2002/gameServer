@@ -20,8 +20,8 @@ except ImportError:
 	flags = None
 SCOPES = 'https://www.googleapis.com/auth/drive.file'
 print(os.getcwd())
-CLIENT_SECRET_FILE = 'gmsserver/client_secret.json'
-CREDENTIAL_FILENAME = 'gmsserver/drive-python-upload.json'
+CLIENT_SECRET_FILE = os.getcwd()+'/gmsserver/client_secret.json'
+CREDENTIAL_FILENAME = os.getcwd()+'/gmsserver/drive-python-upload.json'
 store = file.Storage(CREDENTIAL_FILENAME)
 creds = store.get()
 if not creds or creds.invalid:
@@ -49,7 +49,7 @@ def find_folder(name):
 
 def file_download(id, name):
 	request = DRIVE.files().get_media(fileId=id)
-	f = open("download/"+name,'wb')
+	f = open(os.getcwd()+"/download/"+name,'wb')
 	wr = csv.writer(f)
 	downloader = MediaIoBaseDownload(f, request)
 	done = False
